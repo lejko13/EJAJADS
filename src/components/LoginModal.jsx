@@ -13,9 +13,9 @@ const UserIcon = () => (
 // ── ODKAZY – sem doplň svoje linky ──────────────────────────
 // prázdny odkaz = po kliknutí sa zobrazí „Odkaz čoskoro doplníme“
 export const LINKS = {
-  instagram: '', // napr. https://www.instagram.com/ejajads/
+  instagram: 'https://www.instagram.com/ejajads/',
   tiktok: '', // napr. https://www.tiktok.com/@ejajads
-  email: '', // napr. info@ejajads.sk
+  email: 'leo.fudaly@gmail.com',
 }
 
 // ikonky ako obrázky (public/icons) – vždy v pôvodnom pomere strán
@@ -29,7 +29,7 @@ const GmailIcon = () => <ImgIcon src="/icons/gmail.png" w={24} h={18} />
 const providers = [
   { id: 'email', label: 'Prihlásiť sa', icon: UserIcon },
   { id: 'instagram', label: 'Sleduj nás na Instagrame', icon: InstagramIcon, link: 'instagram' },
-  { id: 'tiktok', label: 'Sleduj nás na TikToku', icon: TikTokIcon, link: 'tiktok' },
+  // { id: 'tiktok', label: 'Sleduj nás na TikToku', icon: TikTokIcon, link: 'tiktok' }, // zatiaľ skryté
   { id: 'contact', label: 'Napíš nám e-mail', icon: GmailIcon, link: 'email' },
 ]
 
@@ -138,10 +138,10 @@ export default function LoginModal() {
     <div className="fixed inset-0 z-[70] flex items-end justify-center sm:items-center">
       <div
         onClick={closable ? closeLogin : undefined}
-        className="intro-in absolute inset-0 bg-black/55 backdrop-blur-xl"
+        className={`absolute inset-0 bg-black/55 backdrop-blur-xl ${closable ? 'intro-in' : ''}`}
       />
 
-      <div className="sheet-up relative flex max-h-[100dvh] w-full flex-col overflow-hidden rounded-t-2xl bg-[#252525] sm:w-[480px] sm:max-h-[min(720px,92dvh)] sm:rounded-2xl">
+      <div className={`${closable ? 'sheet-up' : ''} relative flex max-h-[100dvh] w-full flex-col overflow-hidden rounded-t-2xl bg-[#252525] sm:w-[480px] sm:max-h-[min(720px,92dvh)] sm:rounded-2xl`}>
         {/* horná lišta */}
         <div className="flex h-14 shrink-0 items-center justify-between px-4">
           {view !== 'providers' ? (

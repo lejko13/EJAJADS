@@ -44,7 +44,14 @@ export function StoreProvider({ children }) {
   const [infoVideo, setInfoVideo] = useState(null)
   // prihlásenie cez Supabase
   // user: undefined = ešte zisťujeme, null = neprihlásený, objekt = prihlásený
-  const [user, setUser] = useState(undefined)
+  // bez uloženého prihlásenia vieme hneď, že nie je prihlásený → okno sa ukáže okamžite
+  const [user, setUser] = useState(() => {
+    try {
+      return Object.keys(localStorage).some((k) => k.startsWith('sb-') && k.endsWith('-auth-token')) ? undefined : null
+    } catch {
+      return undefined
+    }
+  })
   const [loginOpen, setLoginOpen] = useState(false)
   const openLogin = useCallback(() => setLoginOpen(true), [])
   const closeLogin = useCallback(() => setLoginOpen(false), [])
