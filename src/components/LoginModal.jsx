@@ -17,7 +17,6 @@ export const LINKS = {
   instagram: '', // napr. https://www.instagram.com/ejajads/
   tiktok: '', // napr. https://www.tiktok.com/@ejajads
   email: '', // napr. info@ejajads.sk
-  newsletter: '', // napr. odkaz na formulár newslettera
 }
 
 // ikonky ako obrázky (public/icons) – vždy v pôvodnom pomere strán
@@ -70,7 +69,7 @@ const inputCls =
 
 export default function LoginModal() {
   const { user, loginOpen, closeLogin, showToast } = useStore()
-  const [view, setView] = useState('providers') // providers | email
+  const [view, setView] = useState('providers') // providers | email | newsletter | subscribed
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -114,6 +113,20 @@ export default function LoginModal() {
     showToast('Si prihlásený')
   }
 
+  // newsletter → tabuľka „newsletter“ v Supabase (Table Editor → newsletter)
+  const onNewsletterSubmit = async (e) => {
+    e.preventDefault()
+    setError('')
+    setBusy(true)
+    const { error } = await supabase.from('newsletter').insert({ email: email.trim().toLowerCase() })
+    setBusy(false)
+    // 23505 = e-mail už v zozname je → pre návštevníka je to tiež úspech
+    if (error && error.code !== '23505') return setError('Nepodarilo sa prihlásiť. Skús to znova.')
+    setView('subscribed')
+  }
+
+  const title = view === 'newsletter' || view === 'subscribed' ? 'Newsletter' : 'Prihlás sa'
+
   return (
     <div className="fixed inset-0 z-[70] flex items-end justify-center sm:items-center">
       <div
@@ -124,7 +137,7 @@ export default function LoginModal() {
       <div className="sheet-up relative flex max-h-[100dvh] w-full flex-col overflow-hidden rounded-t-2xl bg-[#252525] sm:w-[480px] sm:max-h-[min(720px,92dvh)] sm:rounded-2xl">
         {/* horná lišta */}
         <div className="flex h-14 shrink-0 items-center justify-between px-4">
-          {view === 'email' ? (
+          {view !== 'providers' ? (
             <button onClick={() => { setError(''); setView('providers') }} aria-label="Späť" className="grid h-10 w-10 place-items-center rounded-full hover:bg-white/10">
               <ChevronLeft size={22} />
             </button>
@@ -143,7 +156,7 @@ export default function LoginModal() {
             <Logo height={34} />
           </div>
           <h2 className="mb-7 text-center text-[26px] font-bold leading-tight sm:text-[30px]">
-            Prihlás sa
+            {title}
           </h2>
 
           {view === 'providers' && (
@@ -186,6 +199,43 @@ export default function LoginModal() {
             </form>
           )}
 
+          {view === 'newsletter' && (
+            <form onSubmit={onNewsletterSubmit} className="space-y-3">
+              <p className="pb-1 text-center text-[15px] leading-relaxed text-white/70">
+                Zadaj e-mail a ako prvý sa dozvieš o spustení ejajads a novinkách.
+              </p>
+              <input
+                type="email"
+                required
+                autoFocus
+                maxLength={254}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="E-mail"
+                autoComplete="email"
+                className={inputCls}
+              />
+              {error && <p className="text-[14px] font-medium text-brand">{error}</p>}
+              <button
+                type="submit"
+                disabled={busy || !email}
+                className="h-[52px] w-full rounded-lg bg-brand text-[16px] font-semibold transition hover:bg-brand-hover disabled:bg-white/[0.08] disabled:text-white/35"
+              >
+                {busy ? 'Chvíľku…' : 'Prihlásiť sa na newsletter'}
+              </button>
+              <p className="text-center text-[12px] leading-relaxed text-white/45">
+                Odhlásiť sa môžeš kedykoľvek – stačí nám napísať.
+              </p>
+            </form>
+          )}
+
+          {view === 'subscribed' && (
+            <div className="space-y-2 text-center">
+              <p className="text-[17px] font-semibold">Hotovo, si v zozname ✓</p>
+              <p className="text-[15px] text-white/65">Ozveme sa ti na {email.trim().toLowerCase()}, keď bude čo nové.</p>
+            </div>
+          )}
+
           <p className="mt-10 text-center text-[13px] leading-relaxed text-white/50">
             Pokračovaním súhlasíš s{' '}
             <a href="#" className="text-white/90 hover:underline">Podmienkami používania</a> ejajads a potvrdzuješ, že si si prečítal{' '}
@@ -199,15 +249,15 @@ export default function LoginModal() {
         {/* spodok */}
         <div className="shrink-0 border-t border-white/10 py-5 pb-[max(env(safe-area-inset-bottom),20px)] text-center text-[16px]">
           Nechceš nič zmeškať?{' '}
-          {hrefFor('newsletter') ? (
-            <a href={hrefFor('newsletter')} target="_blank" rel="noreferrer" className="font-semibold text-brand hover:underline">
-              Prihlás sa na newsletter
-            </a>
-          ) : (
-            <button onClick={() => showToast('Newsletter čoskoro spustíme')} className="font-semibold text-brand hover:underline">
-              Prihlás sa na newsletter
-            </button>
-          )}
+          <button
+            onClick={() => {
+              setError('')
+              setView('newsletter')
+            }}
+            className="font-semibold text-brand hover:underline"
+          >
+            Prihlás sa na newsletter
+          </button>
         </div>
       </div>
     </div>
