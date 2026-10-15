@@ -8,6 +8,17 @@ import Following from './pages/Following'
 import Profile from './pages/Profile'
 import LoginModal from './components/LoginModal'
 import { owner, videos } from './data/videos'
+
+// pri každom otvorení webu iné poradie videí (ako keď scrolluješ TikTok)
+function shuffle(list) {
+  const a = [...list]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+const feedVideos = shuffle(videos)
 import { useStore } from './lib/store'
 
 const mail = `mailto:${owner.email}?subject=${encodeURIComponent('Dopyt – video reklama')}`
@@ -98,9 +109,9 @@ export default function App() {
       <Sidebar compact={compact} onToggleCompact={() => setCompact((c) => !c)} />
       <main className={`min-h-dvh ${compact ? 'md:pl-[72px]' : 'md:pl-[72px] lg:pl-[240px]'}`}>
         <Routes>
-          <Route path="/" element={<Feed key="all" list={videos} />} />
-          <Route path="/reklamy" element={<Feed key="ads" list={videos.filter((v) => v.type === 'reklamy')} />} />
-          <Route path="/reels" element={<Feed key="reels" list={videos.filter((v) => v.type === 'reels')} />} />
+          <Route path="/" element={<Feed key="all" list={feedVideos} />} />
+          <Route path="/reklamy" element={<Feed key="ads" list={feedVideos.filter((v) => v.type === 'reklamy')} />} />
+          <Route path="/reels" element={<Feed key="reels" list={feedVideos.filter((v) => v.type === 'reels')} />} />
           <Route path="/following" element={<Following />} />
           <Route path="/explore" element={<Explore />} />
           <Route path="/:profile" element={<Profile />} />
