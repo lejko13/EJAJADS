@@ -14,7 +14,7 @@ const mail = `mailto:${owner.email}?subject=${encodeURIComponent('Dopyt – vide
 
 // pravý horný roh – ako "Získať mince / Získať apl."
 function TopRight() {
-  const { openLogin } = useStore()
+  const { openLogin, user, signOut } = useStore()
   return (
     <div className="fixed right-6 top-4 z-30 hidden items-center gap-1 rounded-full bg-elev/90 p-1.5 pl-4 backdrop-blur md:flex">
       <a href={mail} className="flex items-center gap-1.5 rounded-full px-2 py-1.5 text-[15px] font-semibold hover:text-white/80">
@@ -24,9 +24,15 @@ function TopRight() {
         <PhoneIcon size={18} /> <span className="hidden xl:inline">Instagram</span>
       </a>
       <span className="mx-1 h-6 w-px bg-line" />
-      <button onClick={openLogin} className="h-10 rounded-full bg-brand px-5 text-[16px] font-semibold hover:bg-brand-hover">
-        Prihlásiť sa
-      </button>
+      {user ? (
+        <button onClick={signOut} title={user.email} className="h-10 rounded-full bg-elev-2 px-5 text-[16px] font-semibold hover:bg-white/20">
+          Odhlásiť sa
+        </button>
+      ) : (
+        <button onClick={openLogin} className="h-10 rounded-full bg-brand px-5 text-[16px] font-semibold hover:bg-brand-hover">
+          Prihlásiť sa
+        </button>
+      )}
     </div>
   )
 }

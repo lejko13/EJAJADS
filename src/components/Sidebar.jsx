@@ -187,7 +187,7 @@ function NavEntry({ item, compact }) {
 
 export default function Sidebar({ compact: manualCompact, onToggleCompact }) {
   const [searchOpen, setSearchOpen] = useState(false)
-  const { openLogin } = useStore()
+  const { openLogin, user, signOut } = useStore()
   const compactAll = searchOpen || manualCompact
 
   return (
@@ -256,12 +256,21 @@ export default function Sidebar({ compact: manualCompact, onToggleCompact }) {
 
             {!compactAll && (
               <div className="hidden lg:block">
-                <button
-                  onClick={openLogin}
-                  className="mt-4 h-12 w-full rounded-lg bg-brand text-[17px] font-semibold hover:bg-brand-hover"
-                >
-                  Prihlásiť sa
-                </button>
+                {user ? (
+                  <div className="mt-4">
+                    <div className="mb-2 truncate px-2 text-[13px] text-muted">{user.email}</div>
+                    <button onClick={signOut} className="h-12 w-full rounded-lg bg-elev text-[17px] font-semibold hover:bg-elev-2">
+                      Odhlásiť sa
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={openLogin}
+                    className="mt-4 h-12 w-full rounded-lg bg-brand text-[17px] font-semibold hover:bg-brand-hover"
+                  >
+                    Prihlásiť sa
+                  </button>
+                )}
                 <div className="my-4 border-t border-line" />
                 <div className="mb-2 px-2 text-[15px] font-semibold text-white/80">Klienti</div>
                 {Object.values(accounts).map((a) => (

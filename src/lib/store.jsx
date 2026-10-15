@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { supabase } from './supabase'
 
 const Ctx = createContext(null)
 
@@ -41,10 +42,25 @@ export function StoreProvider({ children }) {
   const [saved, toggleSave] = usePersistentSet('ejaj:saved')
   const [followed, toggleFollow] = usePersistentSet('ejaj:followed')
   const [infoVideo, setInfoVideo] = useState(null)
-  // prihlásenie – zatiaľ povinné, okno je otvorené na každej stránke
-  const [loginOpen, setLoginOpen] = useState(true)
+  // prihlásenie cez Supabase
+  // user: undefined = ešte zisťujeme, null = neprihlásený, objekt = prihlásený
+  const [user, setUser] = useState(undefined)
+  const [loginOpen, setLoginOpen] = useState(false)
   const openLogin = useCallback(() => setLoginOpen(true), [])
   const closeLogin = useCallback(() => setLoginOpen(false), [])
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setUser(data.session?.user ?? null))
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null)
+      if (event === 'SIGNED_IN') setLoginOpen(false)
+    })
+    return () => data.subscription.unsubscribe()
+  }, [])
+
+  const signOut = useCallback(async () => {
+    await supabase.auth.signOut()
+  }, [])
   const [toast, setToast] = useState(null)
   const toastTimer = useRef()
 
@@ -79,6 +95,7 @@ export function StoreProvider({ children }) {
         saved, toggleSave,
         followed, toggleFollow,
         infoVideo, setInfoVideo,
+        user, signOut,
         loginOpen, openLogin, closeLogin,
         toast, showToast,
         share,
