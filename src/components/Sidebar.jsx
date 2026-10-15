@@ -285,7 +285,7 @@ export default function Sidebar({ compact: manualCompact, onToggleCompact }) {
                 <div className="my-4 border-t border-line" />
                 <p className="px-2 pb-6 text-[12px] leading-relaxed text-white/40">
                   AI video reklamy · Reels · TikTok
-                  <br />© 2026 ejajads
+                  <br />© 2026 EJAJADS™
                 </p>
               </div>
             )}

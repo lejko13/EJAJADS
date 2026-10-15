@@ -75,7 +75,7 @@ export function StoreProvider({ children }) {
       const url = `${location.origin}/?v=${video.id}`
       try {
         if (navigator.share && matchMedia('(pointer: coarse)').matches) {
-          await navigator.share({ title: 'ejajads', text: video.caption, url })
+          await navigator.share({ title: 'EJAJADS™', text: video.caption, url })
           return
         }
         await navigator.clipboard.writeText(url)

@@ -3,7 +3,7 @@
 
 export const owner = {
   handle: 'ejajads',
-  name: 'ejajads',
+  name: 'EJAJADS™',
   avatar: '/logo-ejajads.png',
   bio: 'AI video reklamy, reels a TikToky pre značky 🎬\nOd nápadu po hotové video za pár dní.',
   link: 'portfolio.leofudaly.com',

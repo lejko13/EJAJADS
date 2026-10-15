@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useStore } from '../lib/store'
 import { supabase, authErrorSk } from '../lib/supabase'
-import { Logo } from './Brand'
 import { ChevronLeft } from './Icons'
 
 /* ── ikonky poskytovateľov ─────────────────────────────── */
@@ -125,7 +124,15 @@ export default function LoginModal() {
     setView('subscribed')
   }
 
-  const title = view === 'newsletter' || view === 'subscribed' ? 'Newsletter' : 'Prihlás sa'
+  const isNewsletter = view === 'newsletter' || view === 'subscribed'
+  const title =
+    isNewsletter ? (
+      'Newsletter'
+    ) : (
+      <>
+        Prihlás sa do EJAJADS<sup className="ml-0.5 align-super text-[0.45em] font-semibold">™</sup>
+      </>
+    )
 
   return (
     <div className="fixed inset-0 z-[70] flex items-end justify-center sm:items-center">
@@ -152,12 +159,16 @@ export default function LoginModal() {
         </div>
 
         <div className="thin-scrollbar flex-1 overflow-y-auto px-5 pb-6 sm:px-10">
-          <div className="mb-3 flex justify-center pt-1">
-            <Logo height={34} />
-          </div>
-          <h2 className="mb-7 text-center text-[26px] font-bold leading-tight sm:text-[30px]">
-            {title}
-          </h2>
+          {title && (
+            <h2 className={`text-center text-[26px] font-bold leading-tight sm:text-[30px] ${isNewsletter ? 'mb-7' : 'mb-2'}`}>
+              {title}
+            </h2>
+          )}
+          {!isNewsletter && (
+            <p className="mb-7 text-center text-[13px] leading-relaxed text-white/50">
+              Pre objednanie reklamy nás kontaktujte.
+            </p>
+          )}
 
           {view === 'providers' && (
             <div className="space-y-3">
@@ -237,12 +248,7 @@ export default function LoginModal() {
           )}
 
           <p className="mt-10 text-center text-[13px] leading-relaxed text-white/50">
-            Pokračovaním súhlasíš s{' '}
-            <a href="#" className="text-white/90 hover:underline">Podmienkami používania</a> ejajads a potvrdzuješ, že si si prečítal{' '}
-            <a href="https://portfolio.leofudaly.com/gdpr" target="_blank" rel="noreferrer" className="text-white/90 hover:underline">
-              Zásady ochrany osobných údajov
-            </a>
-            .
+            Na webe EJAJADS™ ešte pracujeme – čoskoro ho spúšťame naplno. Ďakujeme za trpezlivosť.
           </p>
         </div>
 
